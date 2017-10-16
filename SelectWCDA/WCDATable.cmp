@@ -1,0 +1,119 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" access="global" >
+                
+<ltng:require styles="{!join(',', $Resource.DataTableCSS)}"
+      scripts="{!join(',', 
+		    	    $Resource.jquery224, 
+        	       $Resource.DataTableJS,
+               		$Resource.DataTableSelectJS) }"/>
+<style>
+    .leftFloat{
+    	float:left
+    }
+</style>
+ 
+    
+<aura:attribute name="WCDARecordList" type="WCDA__c[]" default="{}" access="global"/>
+<aura:attribute name="WCDASelectedRecords" type="WCDA__c[]" default="{}" access="global"/>
+<aura:registerEvent name="selectedTableEvt" type="c:updateSelectedTableEvent"/>
+<aura:registerEvent name="compEvent" type="c:WCDATableComponentEvent" />
+<aura:handler event="c:WCDAQuery" action="{!c.handleRunQuery}"/>
+<aura:handler name="compEvent" event="c:WCDATableComponentEvent" action="{!c.handleCompEvent}"/>
+<aura:handler event="c:UpdateMainTableEvent" action="{!c.handleRunQuery}"/>
+
+  
+  
+  <div style="overflow-x:auto; border:1px solid black;padding:3px;" >
+      <table id="datatable" class="display slds-table slds-table_bordered" cellspacing="0" >
+            
+         <thead>
+            <tr>
+               <th>S.No</th> 
+               <!-- 
+               //@ACS -start [01-sept-2017]
+               
+               <th>ID</th> 
+               <th>Name </th>
+               -->
+               
+               <th>WCDA</th>
+               <th>Route</th>
+               
+               <!-- 
+               //@ACS -stop [01-sept-2017]
+               -->
+               
+               <th>Division</th>
+               <th>Market Area</th>
+               <th>Assigned</th>
+               <th>ACC</th>
+               <th>Closed Removed Total</th>
+               <th>Closed Sale</th>
+               <th>Closed TBR Total</th>
+               <th>Elig Type G</th>
+               <th>Lead Count</th>
+               <th>MDU Yes</th>
+               <th>MDU No</th>
+               <th>Workable</th>
+               <th>Wireless</th>
+               <th>X1G Total</th>
+               <th>IPTV Eligible</th>
+               <th>X1 5M Total </th>
+               <th>X1 100M Total</th>
+               <th>Live Yes</th>
+               <th>Live No</th>
+               <th>Red</th>
+               <th>Total 12 mos Cancels All</th>
+               <th>Total 12 mos Disconnects All</th>
+               <th>Total 12 mos Sales All</th>
+               <th>Total 12 mos Sales D2D</th>
+               <th>Do Not Knock</th>
+               <th>Clock</th>
+               <th>FriendlyName__c</th>
+            </tr>
+         </thead>
+         <tfoot>
+              <tr>
+               <th> </th>
+              	<th> </th>
+               	<th> </th>
+               	<th> </th>
+               	<th> </th>
+                <th> </th>
+               	<th> </th>
+               	<th> </th>
+                <th> </th>
+                <th> </th>
+               	<th> </th>
+               	<th> </th>
+                <th> </th>
+               	<th> </th>
+               	<th> </th>
+                <th> </th>
+                <th> </th>
+               	<th> </th>
+                <th> </th>
+               	<th> </th>
+               	<th> </th>
+                <th> </th>
+                <th> </th>
+                <th> </th>
+               	<th> </th>
+               	<th> </th>
+                <th> </th>
+                <th> </th>
+                <th> </th>
+                <th> </th>
+             </tr>    
+          </tfoot>
+      </table>
+      
+    </div>
+    <br/>
+    
+    <div id="downloadDiv" align="center" >
+        <lightning:icon iconName="action:download" size="small" 
+                        title="Select DAs' to move to child list below"/>
+    </div>
+    
+  
+</aura:component>
