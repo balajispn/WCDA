@@ -4,3 +4,5 @@ sgsgsgsgsdsdggg
 sdgfsdgsdgss
 jfjhdgjhjhgjhdgjhgjhgjhdgjhd
 kykykfykjkjyjkyfkjykyky
+sdgfsdgsdgss
+rebase commit line test
