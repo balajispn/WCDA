@@ -1,0 +1,145 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" access="global">
+<aura:attribute name="isOpen" type="boolean" default="false"/>
+<aura:attribute name="saveAsLeadpack" type="sObject" default="{}"/>
+    
+<ltng:require styles="{!join(',', $Resource.DataTableCSS)}"
+      scripts="{!join(',', 
+		    	    $Resource.jquery224, 
+        	       $Resource.DataTableJS) }"/>
+	
+    
+<aura:attribute name="WCDARecordList" type="WCDA__c[]" default="{}" access="global"/>
+
+<aura:registerEvent name="UpdateMainTableEvt" type="c:UpdateMainTableEvent"/>
+<aura:registerEvent name="SaveEvt" type="c:SaveRecords"/>
+<aura:handler event="c:updateSelectedTableEvent" action="{!c.handleSelectedRecords}"/>
+ <aura:registerEvent name="compEvent" type="c:WCDATableComponentEvent" />
+ <aura:handler name="compEvent" event="c:WCDATableComponentEvent" action="{!c.handleCompEvent}"/>
+    
+   <div id="uploadDiv" align="center" >
+        <lightning:icon iconName="action:upload" size="small"
+                        title="Select DAs' to move to parent list above"/>
+                        
+   </div>
+   <br/>
+    
+  <div style="overflow-x:auto;; border:1px solid black;padding:3px;" >
+      <table id="datatable2" class="display slds-table slds-table_bordered" cellspacing="0" width="100%">
+         <thead>
+            <tr>
+               <th>S.No </th> 
+               <th>WCDA</th>
+               <th>Route </th>
+               <th>Division</th>
+               <th>Market Area</th>
+               <th>Assigned</th>
+               <th>ACC</th>
+               <th>Closed Removed Total</th>
+               <th>Closed Sale</th>
+               <th>Closed TBR Total</th>
+               <th>Elig Type G</th>
+               <th>Lead Count</th>
+               <th>MDU Yes </th>
+               <th>MDU No</th>
+               <th>Workable</th>
+               <th>Wireless</th>
+               <th>Friendly Name</th>
+               <th>X1G Total</th>
+               <th>IPTV Eligible</th>
+               <th>X1 5M Total </th>
+               <th>X1 100M Total</th>
+               <th>Live Yes</th>
+               <th>Live No</th>
+               <th>Red</th>
+               <th>Total 12 mos Cancels All</th>
+               <th>Total 12 mos Disconnects All</th>
+               <th>Total 12 mos Sales All</th>
+               <th>Total 12 mos Sales D2D</th>
+               <th>Do Not Knock</th>
+               <th>Clock</th>
+               <th> FriendlyName__c </th>
+            </tr>
+         </thead>
+         <tfoot>
+              <tr>
+                <th> </th>
+              	<th> </th>
+               	<th> </th>
+               	<th> </th>
+               	<th> </th>
+                <th> </th>
+               	<th> </th>
+               	<th> </th>
+               	<th> </th>
+                <th> </th>
+                <th> </th>
+               	<th> </th>
+               	<th> </th>
+                <th> </th>
+               	<th> </th>
+               	<th> </th>
+                <th> </th>
+                <th> </th>
+               	<th> </th>
+                <th> </th>
+               	<th> </th>
+               	<th> </th>
+                <th> </th>
+                <th> </th>
+                <th> </th>
+               	<th> </th>
+               	<th> </th>
+                <th> </th>
+                <th> </th>
+                <th> </th>
+                <th> </th>
+             </tr>    
+          </tfoot>
+      </table>
+      
+    </div>
+    <br/>
+    
+    <!--  NOW BUILD THE MODAL FOR SAVING THE LEADPACK....NOTICE THAT IT IS RIGHT BEFORE THE END OF COMPONENT   -->
+<div id="LeadpackModal" class="slds-m-around--xx-large" >
+ <aura:if isTrue="{!v.isOpen}">
+  <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+    <div class="slds-modal__container">
+      <header class="slds-modal__header">
+        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+          <!--svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+          </svg-->
+          <span class="slds-assistive-text">Close</span>
+        </button>
+        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Modal Header</h2>
+      </header>
+      <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+        <lightning:layoutItem flexibility="no-grow" size="4" mediumDeviceSize="6" largeDeviceSize="4">
+            <c:customLookup objectAPIName="Leadpack__c" IconName="standard:account" selectedRecord="{!v.saveAsLeadpack}" label="Save Leadpack As"/>   
+          <p/>.<p/>.<p/>.<p/>.<p/>.
+          </lightning:layoutItem>
+
+          
+      </div>
+      <footer class="slds-modal__footer">
+        <button class="slds-button slds-button_neutral">Cancel</button>
+        <button class="slds-button slds-button_brand" onclick="{!c.hideLeadpackModal}">Save</button>
+      </footer>
+    </div>
+  </section>
+  <div class="slds-backdrop slds-backdrop_open"></div>
+ </aura:if>
+</div>   
+    
+    
+    <div align="center">
+     
+     <lightning:button variant="brand" label="Save Leadpack" value="{!this}" onclick="{!c.fireSaveEvent}" />
+     &nbsp;
+     <lightning:button variant="brand" label="Assign to Dealer" value="{!this}" onclick="{!c.fireSaveEvent}" />
+     &nbsp;
+     <lightning:button variant="brand" label="Clear" onclick="{!c.clearTable}" />
+     
+    </div>
+</aura:component>

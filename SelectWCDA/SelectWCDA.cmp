@@ -1,0 +1,140 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" controller="WCDARoutines">       		
+  
+<aura:attribute name="isOpen" type="boolean" default="false"/>
+<aura:attribute name="showScenarioSearch" type="boolean" default="true"/>    
+<aura:attribute name="selectedDivision" type="sObject" default="{}"/> 
+<aura:attribute name="selectedScenario" type="sObject" default="{}"/> 
+<aura:attribute name="selectedMarketAreaDMA" type="sObject" default="{}"/>
+<aura:attribute name="selectedLeadpack" type="sObject" default="{}"/>
+<aura:attribute name="selectedWireCenter" type="sObject" default="{}"/>
+<aura:attribute name="selectedWCDA" type="sObject" default="{}"/>
+<aura:attribute name="queryMessage" type="String" default="{}" />
+<aura:attribute name="listOfQueryRecords" type="WCDA__c[]" default="{}" />
+<aura:attribute name="saveAsLeadpack" type="sObject" default="{}"/>
+ <aura:attribute name="Spinner" type="boolean" default="false"/>
+    
+<aura:registerEvent name="renderQueryResult" type="c:WCDAQuery"/>
+    
+<!--aura:handler name="init" value="{!this}" action="{!c.fetchDAs}" /-->
+ 
+  <!--loading spinner start... @ACS - start [01-sept-2017]-->
+ <aura:if isTrue="{!v.Spinner}">
+    <div aura:id="spinnerId" class="slds-spinner_container">
+       <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+         <span class="slds-assistive-text">Loading</span>
+         <div class="slds-spinner__dot-a"></div>
+         <div class="slds-spinner__dot-b"></div>
+       </div>
+    </div>
+ </aura:if>
+  <!-- Loading spinner end-->  
+  
+ 
+
+<!--div class="slds-p-horizontal_small slds-size_1-of-1">Scenario Selection</div-->
+<div class="slds-section slds-is-open">
+  <h3 class="slds-section__title slds-theme_shade">
+    <span class="slds-truncate slds-p-horizontal_small" title="Section Title">Scenario Selection</span>
+  </h3>
+  <div aria-hidden="false" class="slds-section__content">
+    
+  </div>
+</div>
+    
+    
+	<lightning:layout horizontalAlign="spread" multipleRows="true" class="slds-p-around_medium">
+        
+         <!--LINE 1  GET SCENARIO AND RUN QUERY-->
+         <lightning:layoutItem flexibility="no-grow" size="8" mediumDeviceSize="8" largeDeviceSize="8"> </lightning:layoutItem>        
+         <lightning:layoutItem flexibility="no-grow" size="2" mediumDeviceSize="2" largeDeviceSize="2">  
+            <lightning:button class="slds-button slds-button_brand slds-float--right" label="Fetch Scenario" value="{!this}" onclick="{!c.showScenarios}" />
+            <br/>
+     	 <!--aura:if isTrue="{!showScenarioSearch}"-->
+         	<c:customLookup objectAPIName="Scenario__c" IconName="standard:account" selectedRecord="{!v.selectedScenario}" label="Scenarios" />
+         <!--/aura:if-->
+
+        </lightning:layoutItem>      
+         <lightning:layoutItem flexibility="no-grow" size="2" mediumDeviceSize="2" largeDeviceSize="2">  
+
+             <lightning:button class="slds-button slds-button_brand slds-float--right" label="Run Query" value="{!this}" onclick="{!c.fetchDAs}"/>
+
+        </lightning:layoutItem>      
+
+        <!-- LINE 2  DIVISION, DMA AND LEADPACK-->
+        <lightning:layoutItem flexibility="no-grow" size="4" mediumDeviceSize="6" largeDeviceSize="4">
+                    <c:customLookup objectAPIName="division" IconName="standard:account" selectedRecord="{!v.selectedDivision}" label="Division"/>   
+        </lightning:layoutItem>
+        <lightning:layoutItem flexibility="no-grow" size="4" mediumDeviceSize="6" largeDeviceSize="4">
+            <c:customLookup objectAPIName="MarketArea__c" IconName="standard:account" selectedRecord="{!v.selectedMarketAreaDMA}" label="Market Area(DMA)"/>   
+        </lightning:layoutItem>        
+        <lightning:layoutItem flexibility="no-grow" size="4" mediumDeviceSize="6" largeDeviceSize="4">
+            <c:customLookup objectAPIName="Leadpack__c" IconName="standard:account" selectedRecord="{!v.selectedLeadpack}" label="Leadpack"/>   
+        </lightning:layoutItem>
+
+        <lightning:layoutItem flexibility="no-grow" size="4" mediumDeviceSize="6" largeDeviceSize="4">
+            <c:customLookup objectAPIName="WC__c" IconName="standard:account" selectedRecord="{!v.selectedWireCenter}" label="Wire Center"/>   
+        </lightning:layoutItem>
+
+        <lightning:layoutItem flexibility="no-grow" size="4" mediumDeviceSize="6" largeDeviceSize="4">
+                    <c:customLookup objectAPIName="WCDA__c" IconName="standard:account" selectedRecord="{!v.selectedWCDA}" label="WCDA"/>   
+         </lightning:layoutItem>
+
+        <lightning:layoutItem flexibility="no-grow" size="4" mediumDeviceSize="6" largeDeviceSize="4"></lightning:layoutItem>        
+        <lightning:layoutItem flexibility="no-grow" size="12" mediumDeviceSize="12" largeDeviceSize="12">.</lightning:layoutItem>        
+
+        <lightning:layoutItem flexibility="no-grow" size="2" mediumDeviceSize="2" largeDeviceSize="2">
+      <div class="slds-form-element">
+    <label class="slds-checkbox_toggle slds-grid">
+      <span class="slds-form-element__label slds-m-bottom_none">Assigned/Pending DAs</span>
+       <ui:inputCheckbox aura:id="assPendingDA" />
+      <span id="toggle-desc" class="slds-checkbox_faux_container" aria-live="assertive">
+        <span class="slds-checkbox_faux"></span>
+        <span class="slds-checkbox_on">Include</span>
+        <span class="slds-checkbox_off">Exclude</span>
+        </span>
+       </label>
+  		 </div>
+      
+     </lightning:layoutItem>   
+     <lightning:layoutItem flexibility="no-grow" size="2" mediumDeviceSize="2" largeDeviceSize="2">
+      <div class="slds-form-element">
+    <label class="slds-checkbox_toggle slds-grid">
+      <span class="slds-form-element__label slds-m-bottom_none">PwC</span>
+       <ui:inputCheckbox aura:id="pwcCheck" />
+      <span id="toggle-desc" class="slds-checkbox_faux_container" aria-live="assertive">
+        <span class="slds-checkbox_faux"></span>
+        <span class="slds-checkbox_on">Include</span>
+        <span class="slds-checkbox_off">Exclude</span>
+        </span>
+       </label>
+  		 </div>
+      
+     </lightning:layoutItem>
+     
+     <lightning:layoutItem flexibility="no-grow" size="8" mediumDeviceSize="8" largeDeviceSize="8">
+     </lightning:layoutItem>       
+        
+        
+        <!--aura:if isTrue="{!v.listOfQueryRecords > 0}" -->
+        	<lightning:layoutItem flexibility="no-grow" size="12" mediumDeviceSize="12" largeDeviceSize="12">
+            	  <h3 class="slds-section__title slds-theme_shade">
+                		<span class="slds-truncate slds-p-horizontal_small" title="Filter">DA Filtering</span>
+              		</h3>
+                <c:WCDATable />
+         	</lightning:layoutItem>
+         <!-- /aura:if -->
+        
+        <lightning:layoutItem flexibility="no-grow" size="12" mediumDeviceSize="12" largeDeviceSize="12">
+            	  <h3 class="slds-section__title slds-theme_shade">
+                		<span class="slds-truncate slds-p-horizontal_small" title="Filter">Selected DAs</span>
+              		</h3>
+                <c:WCDASelectTable />
+         	</lightning:layoutItem>
+        
+        		
+
+    </lightning:layout>
+    
+
+
+</aura:component>

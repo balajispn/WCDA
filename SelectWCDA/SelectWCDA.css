@@ -1,0 +1,44 @@
+.THIS.hideDiv {
+    display:none !important;
+}
+
+.THIS table.dataTable thead th, .THIS table.dataTable thead td {
+  padding-left: 10px;
+}
+
+.THIS .pl15 {
+	padding-left:15px;
+}
+
+.THIS .pb10 {
+	padding-bottom:10px;
+}
+
+.THIS .dataTables_wrapper .dataTables_filter {
+  float: none;
+  text-align: left;
+  padding-bottom:10px;
+}
+
+.THIS .dataTables_wrapper .dataTables_info {
+  float: none;
+}
+
+.THIS .dataTables_wrapper .dataTables_length {
+  float: none;
+}
+
+.THIS .dataTables_wrapper .dataTables_paginate {
+  float:none;
+  text-align: left;
+}
+
+.THIS .dataTables_wrapper .dataTables_info .select-info  {
+	display:block;
+	margin-bottom:8px;
+}
+
+.THIS.slds-spinner_container {  
+  z-index: 10000;
+  position: fixed;   
+}
